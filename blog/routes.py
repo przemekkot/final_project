@@ -158,3 +158,19 @@ def delete_entry(entry_id):
     flash('Post skasowany')
     return redirect(url_for('index'))
 
+
+# Wyszukiwarka postów
+
+#@app.route('/search/')
+@app.route('/search/<int:entry_id>')
+def search():
+    errors = None
+    form = EntryForm()
+    search_query = request.args.get("q", "")
+    all_posts = Entry.query.filter_by(is_published=True).order_by(Entry.pub_date.desc())
+    if search_query:
+        posts = db.session.search(search_query=search_query)
+        return render_template("search.html", posts=posts, search_query=search_query)
+    else:
+        errors = form.errors
+    #return render_template("search.html", search_query=search_query)
