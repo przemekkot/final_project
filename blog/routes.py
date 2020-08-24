@@ -161,15 +161,16 @@ def delete_entry(entry_id):
 
 # Wyszukiwarka postów
 
-#@app.route('/search/')
-@app.route('/search/<int:entry_id>')
+#@app.route('/search/<int:entry_id>', methods=['GET'])
+
+@app.route('/search/', methods=['GET'])
 def search():
     errors = None
     form = EntryForm()
     search_query = request.args.get("q", "")
     all_posts = Entry.query.filter_by(is_published=True).order_by(Entry.pub_date.desc())
     if search_query:
-        posts = db.session.search(search_query=search_query)
+        posts = db.session.query(search_query)
         return render_template("search.html", posts=posts, search_query=search_query)
     else:
         errors = form.errors
