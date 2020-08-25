@@ -6,6 +6,7 @@ from blog.models import Entry, db
 from blog.forms import EntryForm
 from blog.forms import LoginForm
 import functools
+from sqlalchemy import or_
 
 
 app.secret_key = b'my-secret-key'
@@ -161,8 +162,6 @@ def delete_entry(entry_id):
 
 # Wyszukiwarka postów
 
-#@app.route('/search/<int:entry_id>', methods=['GET'])
-
 @app.route('/search/', methods=['GET'])
 def search():
     errors = None
@@ -170,8 +169,12 @@ def search():
     search_query = request.args.get("q", "")
     all_posts = Entry.query.filter_by(is_published=True).order_by(Entry.pub_date.desc())
     if search_query:
-        posts = db.session.query(search_query)
+        posts = Entry.query.filter(
+            or_(
+                Entry.title.like('%' + search_query + '%'), 
+            Entry.body.like('%' + search_query + '%'))
+        )
         return render_template("search.html", posts=posts, search_query=search_query)
     else:
         errors = form.errors
-    #return render_template("search.html", search_query=search_query)
+    return render_template("homepage.html", form=form, errors=errors)

@@ -48,7 +48,7 @@
                 <!--Koniec wyszukiwarki postów-->
             </div>
             <br/>
-            <div>
+            <div style="margin-left: 20px">
                 {% if session.logged_in %}
                 <form class="form-inline my-2 my-lg-0" action="{{ url_for('logout') }}" method="POST">
                     <button class="btn btn-secondary my-2 my-sm-0" type="submit">Wyloguj</button>
